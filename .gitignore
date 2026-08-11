@@ -1,0 +1,30 @@
+node_modules/
+.env
+
+# Database file (SQLite, if used)
+*.db
+*.sqlite
+
+# Logs
+*.log
+npm-debug.log*
+
+# Uploads directory (user-submitted ID photos)
+backend/uploads/
+uploads/
+
+# Build folders
+frontend/dist/
+dist/
+
+# Firebase service account private key — NEVER commit this to version control!
+backend/config/firebase-service-account.json
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
