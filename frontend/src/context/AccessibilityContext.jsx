@@ -7,11 +7,10 @@ export const AccessibilityProvider = ({ children }) => {
   const [highContrast, setHighContrast] = useState(false);
   const [voiceOutputEnabled, setVoiceOutputEnabled] = useState(true);
 
-  // Dark mode — persisted in localStorage, respects OS preference on first load
+  // Dark mode — persisted in localStorage, defaults to false (clean white theme)
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('neap-dark-mode');
-    if (saved !== null) return saved === 'true';
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+    return saved === 'true';
   });
 
   useEffect(() => {
@@ -38,6 +37,10 @@ export const AccessibilityProvider = ({ children }) => {
 
   const toggleHighContrast = () => setHighContrast(prev => !prev);
   const toggleDarkMode = () => setDarkMode(prev => !prev);
+  const resetToNormalMode = () => {
+    setHighContrast(false);
+    setDarkMode(false);
+  };
   const increaseFont = () => setFontScale(prev => Math.min(prev + 0.15, 1.6));
   const decreaseFont = () => setFontScale(prev => Math.max(prev - 0.15, 0.85));
 
@@ -49,6 +52,7 @@ export const AccessibilityProvider = ({ children }) => {
       toggleHighContrast,
       darkMode,
       toggleDarkMode,
+      resetToNormalMode,
       voiceOutputEnabled,
       setVoiceOutputEnabled,
       increaseFont,

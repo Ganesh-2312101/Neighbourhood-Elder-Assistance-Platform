@@ -73,10 +73,15 @@ export const listenToSpeech = (onResult, onError, onEnd, lang = 'en-US') => {
   };
 
   recognition.onerror = (event) => {
+    // 'aborted' and 'no-speech' are normal cancellation events when switching mics
+    if (['aborted', 'no-speech'].includes(event.error)) {
+      if (onEnd) onEnd();
+      return;
+    }
     console.error('Speech recognition error:', event.error);
     let errorMsg = event.error;
     if (event.error === 'network') {
-      errorMsg = 'Network error: Voice input requires an active connection or is blocked by your proxy.';
+      errorMsg = 'Network error: Voice input requires an active connection.';
     }
     if (onError) onError(errorMsg);
   };
@@ -89,10 +94,8 @@ export const listenToSpeech = (onResult, onError, onEnd, lang = 'en-US') => {
   return recognition;
 };
 
-// Text to Speech Read Aloud
-export const speakText = (text, rate = 0.85, pitch = 1.0) => {
+export const speakText = (text, rate = 0.85, pitch = 1.0, onEnd = null) => {
   if (!isSpeechSynthesisSupported()) {
-    alert('Speech synthesis is not supported in this browser.');
     return;
   }
 
@@ -102,6 +105,11 @@ export const speakText = (text, rate = 0.85, pitch = 1.0) => {
   utterance.rate = rate;
   utterance.pitch = pitch;
   utterance.lang = 'en-US';
+
+  if (onEnd) {
+    utterance.onend = onEnd;
+    utterance.onerror = onEnd;
+  }
 
   window.speechSynthesis.speak(utterance);
 };

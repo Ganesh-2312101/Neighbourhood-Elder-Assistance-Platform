@@ -12,15 +12,14 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user) {
       const newSocket = io('http://localhost:5000', {
-        transports: ['websocket', 'polling']
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 1000,
       });
       setSocket(newSocket);
 
       if (user.role === 'volunteer' || user.role === 'admin') {
-        // -----------------------------------------------------------------
-        // 1. SOCKET.IO: Real-time in-app alerts (app tab is open)
-        //    When a neighbour raises a request, backend emits this event.
-        // -----------------------------------------------------------------
         newSocket.on('volunteer:new_task_alert', (payload) => {
           console.log('[SocketContext] Socket task alert received:', payload);
           fcmClient.showTaskNotification(payload, (_taskId) => {
@@ -28,11 +27,6 @@ export const SocketProvider = ({ children }) => {
           });
         });
 
-        // -----------------------------------------------------------------
-        // 2. FIREBASE FCM FOREGROUND: Real push when app is open
-        //    Firebase doesn't auto-show notifications when the tab is focused.
-        //    listenForeground() handles this gap by showing a manual popup.
-        // -----------------------------------------------------------------
         fcmClient.listenForeground((_taskId) => {
           window.location.href = '/volunteer';
         });
@@ -40,13 +34,19 @@ export const SocketProvider = ({ children }) => {
 
       return () => {
         newSocket.off('volunteer:new_task_alert');
-        newSocket.close();
+        if (newSocket.connected) {
+          newSocket.disconnect();
+        } else {
+          newSocket.on('connect', () => newSocket.disconnect());
+        }
       };
     } else {
-      if (socket) socket.close();
-      setSocket(null);
+      if (socket) {
+        socket.disconnect();
+        setSocket(null);
+      }
     }
-  }, [user]);
+  }, [user?.id]);
 
   return (
     <SocketContext.Provider value={{ socket }}>

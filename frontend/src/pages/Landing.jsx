@@ -79,7 +79,7 @@ export default function Landing() {
               <div className="neap-request-icon"><ShoppingBag size={24} /></div>
               <div><strong>Grocery pickup</strong><p>Today · 2 items requested</p></div>
             </div>
-            <div className="neap-volunteer-line"><div className="neap-avatar">A</div><span><b>Anita</b> accepted this request</span><Check size={16} /></div>
+            <div className="neap-volunteer-line"><div className="neap-avatar">A</div><span><b>Sasisivaprakash M</b> accepted this request</span><Check size={16} /></div>
           </div>
           <div className="neap-request-card neap-request-float">
             <div className="neap-mini-icon"><HeartHandshake size={18} /></div>

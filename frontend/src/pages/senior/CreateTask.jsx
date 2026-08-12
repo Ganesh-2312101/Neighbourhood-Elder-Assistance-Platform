@@ -104,7 +104,7 @@ export default function CreateTask() {
 
   return (
     <div className="flow-page create-task-page">
-      <button onClick={() => navigate('/senior')} className="btn btn-secondary task-back-link">
+      <button onClick={() => navigate('/senior')} className="btn btn-secondary task-back-link" aria-label="Go back to senior dashboard">
         <ArrowLeft style={{ width: 22, height: 22 }} /> Back to Home
       </button>
 
@@ -130,12 +130,12 @@ export default function CreateTask() {
           </div>
 
         {error && (
-          <div className="create-task-error">
+          <div className="create-task-error" role="alert" aria-live="assertive">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="create-task-form">
+        <form onSubmit={handleSubmit} className="create-task-form" noValidate aria-label="Help request form">
           
           {/* Step 1: Category Selection Tile Grid */}
           <div className="task-form-section">
@@ -203,7 +203,10 @@ export default function CreateTask() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="e.g. Need help bringing two heavy grocery bags up to the 3rd floor..."
+              aria-required="true"
+              aria-describedby="task-description-hint"
             />
+            <p id="task-description-hint" className="visually-hidden">Describe what you need help with. Use the voice button to speak your request.</p>
           </div>
 
           {/* Step 3: Interactive Location Map Selector */}
@@ -224,11 +227,12 @@ export default function CreateTask() {
             <label className="task-section-label">
               <span>04</span> When do you need help?
             </label>
-            <div className="urgency-toggle-group">
+            <div className="urgency-toggle-group" role="group" aria-label="Select urgency level">
               <button
                 type="button"
                 className={`btn ${urgency === 'today' ? 'btn-primary' : 'btn-secondary'} urgency-btn`}
                 onClick={() => setUrgency('today')}
+                aria-pressed={urgency === 'today'}
               >
                 <span>🚨 Needed Today</span>
               </button>
@@ -237,6 +241,7 @@ export default function CreateTask() {
                 type="button"
                 className={`btn ${urgency === 'this_week' ? 'btn-primary' : 'btn-secondary'} urgency-btn`}
                 onClick={() => setUrgency('this_week')}
+                aria-pressed={urgency === 'this_week'}
               >
                 <span>📅 Sometime This Week</span>
               </button>
@@ -244,7 +249,7 @@ export default function CreateTask() {
           </div>
 
           {/* Step 5: Submit Button */}
-          <button type="submit" className="btn btn-success btn-large create-task-submit" disabled={loading}>
+          <button type="submit" className="btn btn-success btn-large create-task-submit" disabled={loading} aria-busy={loading} aria-disabled={loading}>
             <Send />
             <span>{loading ? 'Submitting request...' : 'Submit help request'}</span>
           </button>

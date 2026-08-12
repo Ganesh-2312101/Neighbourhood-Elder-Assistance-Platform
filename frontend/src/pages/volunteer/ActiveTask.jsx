@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { MapPin, Phone, MessageSquare, CheckCircle, ShieldAlert, ArrowLeft, Navigation, AlertTriangle, PhoneCall } from 'lucide-react';
+import { MapPin, Phone, MessageSquare, CheckCircle, ShieldAlert, ArrowLeft, Navigation, AlertTriangle, PhoneCall, Star } from 'lucide-react';
 import api from '../../services/api';
 import { startVoiceCall } from '../../services/webrtc';
 import TaskMapView from '../../components/TaskMapView';
@@ -218,6 +218,47 @@ export default function ActiveTask() {
                 <CheckCircle style={{ width: 24, height: 24 }} />
                 <span>Mark Task Completed</span>
               </button>
+            )}
+
+            {task.status === 'completed' && (
+              <div style={{
+                flex: 1,
+                background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+                border: '2px solid #34d399',
+                borderRadius: '16px',
+                padding: '1.25rem',
+                color: '#065f46',
+                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.12)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 800, fontSize: '1.2rem', color: '#047857' }}>
+                  <CheckCircle style={{ width: 28, height: 28, color: '#059669' }} />
+                  <span>Task Completed!</span>
+                </div>
+                <p style={{ margin: '0.6rem 0 0 0', fontSize: '1rem', color: '#065f46', lineHeight: 1.5, fontWeight: 600 }}>
+                  You have successfully completed this request for <strong>{task.requester_name || 'your senior neighbor'}</strong>. This task is recorded in your volunteer history.
+                </p>
+                {task.rating_stars ? (
+                  <div style={{ marginTop: '0.85rem', padding: '0.75rem', background: '#ffffff', borderRadius: '10px', border: '1px solid #a7f3d0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#d97706', fontWeight: 700 }}>
+                      <span>Senior Review:</span>
+                      {[1, 2, 3, 4, 5].map(n => (
+                        <Star key={n} size={16} fill={n <= task.rating_stars ? '#f59e0b' : 'none'} color="#f59e0b" />
+                      ))}
+                      <span style={{ marginLeft: '0.3rem', color: '#374151' }}>({task.rating_stars}/5)</span>
+                    </div>
+                    {task.rating_comment && (
+                      <p style={{ margin: '0.35rem 0 0 0', fontSize: '0.9rem', fontStyle: 'italic', color: '#4b5563' }}>
+                        "{task.rating_comment}"
+                      </p>
+                    )}
+                  </div>
+                ) : null}
+                <div style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  <button onClick={() => navigate('/volunteer', { state: { tab: 'history' } })} className="btn btn-success" style={{ flex: 1, padding: '0.75rem 1rem', fontSize: '1rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                    <CheckCircle style={{ width: 20, height: 20 }} /> View History on Volunteer Page
+                  </button>
+                </div>
+              </div>
             )}
 
             {/* Relinquish / Release Button */}

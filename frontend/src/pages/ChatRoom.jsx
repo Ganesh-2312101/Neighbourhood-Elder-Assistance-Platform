@@ -168,8 +168,8 @@ export default function ChatRoom() {
       />
 
       {/* Header Bar */}
-      <div className="card chat-header">
-        <button onClick={() => navigate(-1)} className="btn btn-secondary chat-back">
+      <div className="card chat-header" role="banner" aria-label="Chat room header">
+        <button onClick={() => navigate(-1)} className="btn btn-secondary chat-back" aria-label="Go back to previous page">
           <ArrowLeft style={{ width: 22, height: 22 }} /> Back
         </button>
 
@@ -197,7 +197,7 @@ export default function ChatRoom() {
       ) : (
         <>
           {/* Messages Container */}
-          <div className="card chat-transcript">
+          <div className="card chat-transcript" role="log" aria-live="polite" aria-label="Chat messages" aria-relevant="additions">
             {loading ? (
               <p className="chat-loading">Loading chat history...</p>
             ) : messages.length === 0 ? (
@@ -322,15 +322,18 @@ export default function ChatRoom() {
             </div>
 
             {/* Standard Text Input Form */}
-            <form onSubmit={handleSendMessage} className="chat-send-form">
+            <form onSubmit={handleSendMessage} className="chat-send-form" role="form" aria-label="Send a message">
+              <label htmlFor="chat-input" className="visually-hidden">Type your message</label>
               <input
+                id="chat-input"
                 type="text"
                 className="input-field chat-input"
                 placeholder="Type your message here..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
+                aria-required="true"
               />
-              <button type="submit" className="btn btn-primary chat-send-button">
+              <button type="submit" className="btn btn-primary chat-send-button" aria-label="Send message">
                 <Send style={{ width: 22, height: 22 }} />
                 <span>Send</span>
               </button>

@@ -31,12 +31,13 @@ export default function Navbar() {
   const roleStyle = user ? (roleMap[user.role] || { bg: 'var(--bg-subtle)', color: 'var(--text-secondary)', border: 'var(--border-color)' }) : {};
 
   return (
-    <header className="full-width-header">
+    <header className="full-width-header" role="banner" aria-label="NEAP site navigation">
+      <a href="#main-content" className="skip-to-content" style={{ position:'absolute', top:'-999px', left:'-999px', zIndex:99999, background:'var(--accent-primary)', color:'#fff', padding:'0.5rem 1rem', borderRadius:'8px', fontWeight:700, textDecoration:'none' }} onFocus={e => { e.target.style.top='8px'; e.target.style.left='8px'; }} onBlur={e => { e.target.style.top='-999px'; e.target.style.left='-999px'; }}>Skip to main content</a>
       <div className="header-content-container">
 
         {/* Brand */}
         <div className="nav-brand-section">
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none', color: 'var(--text-primary)' }}>
+          <Link to="/" aria-label="NEAP – Neighborhood Elder Assistance Platform home" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none', color: 'var(--text-primary)' }}>
             <InteractiveLogo size="small" />
             <div>
               <div style={{ fontSize: '1.1rem', fontWeight: 800, lineHeight: 1.1, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>
@@ -149,7 +150,7 @@ export default function Navbar() {
         </div>
 
         {/* Auth Actions */}
-        <div className="nav-auth-section" style={{ gap: '0.5rem', display: 'flex', alignItems: 'center' }}>
+        <div className="nav-auth-section" style={{ gap: '0.5rem', display: 'flex', alignItems: 'center' }} role="navigation" aria-label="User account actions">
           {user ? (
             <>
               <span style={{

@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import VoiceCommandButton from './components/VoiceCommandButton';
+
 import Landing from './pages/Landing';
 import Login from './pages/auth/Login';
 import SeniorRegister from './pages/auth/SeniorRegister';
@@ -37,7 +39,7 @@ export default function App() {
       <div className="app-container">
         <Navbar />
         <div className="app-body-layout">
-          <main className="main-content-container">
+          <main className="main-content-container" id="main-content" role="main" aria-label="Main content area">
             <Routes>
             {/* Public Routes */}
             <Route path="/" element={
@@ -97,8 +99,9 @@ export default function App() {
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-        </main>
+          </main>
         </div>
+        {user && <VoiceCommandButton />}
       </div>
     </BrowserRouter>
   );

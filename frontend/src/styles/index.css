@@ -1,5 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
+/* ── Accessibility Utilities ── */
+/* Visually hidden but accessible to screen readers */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Keyboard focus ring for all interactive elements */
+:focus-visible {
+  outline: 3px solid var(--accent-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+
 :root {
   --font-base: 15px;
   --font-scale: 1;
@@ -2666,4 +2688,170 @@ html.dark .chat-emergency-button { color: #ffb7bf; border-color: #79414b; backgr
   .chat-emergency-button span { display: none; }
   .chat-emergency-button { min-width: 46px; padding: 0 0.75rem; }
   .emergency-dialog-actions { flex-direction: column-reverse; }
+}
+
+/* ═══════════════════════════════════════════════
+   DARK MODE OVERRIDES — Fix hardcoded light colors
+   ═══════════════════════════════════════════════ */
+
+/* Workspace summary strip */
+html.dark .workspace-summary { background: var(--bg-card); border-color: var(--border-color); }
+html.dark .workspace-summary > div { background: var(--bg-card); }
+html.dark .workspace-summary span,
+html.dark .workspace-summary small { color: var(--text-muted); }
+html.dark .workspace-summary strong { color: var(--text-primary); }
+
+/* Workspace / requests panel cards */
+html.dark .workspace-card,
+html.dark .requests-panel,
+html.dark .mission-section,
+html.dark .open-requests-section { background: var(--bg-card); border-color: var(--border-color); }
+
+/* Section title headings */
+html.dark .section-title h2 { color: var(--text-primary); }
+
+/* Wellness mood buttons */
+html.dark .wellness-options button {
+  background: var(--bg-subtle);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+html.dark .wellness-options button:hover,
+html.dark .wellness-options button.selected {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: #3b82f6;
+  box-shadow: 0 8px 18px rgba(59, 130, 246, 0.15);
+}
+html.dark .wellness-options small { color: var(--text-muted); }
+
+/* Quick-help category grid */
+html.dark .quick-help-grid button {
+  background: var(--bg-subtle);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+html.dark .quick-help-grid button:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15);
+}
+html.dark .quick-help-grid button > span {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+html.dark .quick-help-grid small { color: var(--text-muted); }
+
+/* Request cards */
+html.dark .request-card,
+html.dark .open-request-card {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+}
+html.dark .request-card:hover,
+html.dark .open-request-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 10px 22px rgba(59, 130, 246, 0.12);
+}
+html.dark .request-card h3,
+html.dark .open-request-card h3 { color: var(--text-primary); }
+html.dark .request-card p,
+html.dark .open-request-card p { color: var(--text-secondary); }
+html.dark .request-card-top time,
+html.dark .task-meta { color: var(--text-muted); }
+
+/* Task symbol icon */
+html.dark .task-symbol,
+html.dark .task-icon { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+
+/* Helper assigned banner */
+html.dark .helper-line {
+  background: rgba(34, 197, 94, 0.08);
+  color: #4ade80;
+}
+html.dark .helper-line svg { color: #4ade80; }
+
+/* Mission cards (volunteer) */
+html.dark .mission-card {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+}
+html.dark .mission-card h3 { color: var(--text-primary); }
+html.dark .mission-card p { color: var(--text-secondary); }
+html.dark .card-divider { background: var(--border-color); }
+html.dark .mission-person small { color: var(--text-muted); }
+html.dark .mission-person b { color: var(--text-primary); }
+
+/* Segmented control */
+html.dark .segmented-control {
+  background: var(--bg-primary);
+  border-color: var(--border-color);
+}
+html.dark .segmented-control button { color: var(--text-muted); }
+html.dark .segmented-control button.active {
+  background: var(--bg-card);
+  color: #60a5fa;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Dialog cards */
+html.dark .dialog-card {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+}
+html.dark .dialog-card h2 { color: var(--text-primary); }
+html.dark .dialog-card > p { color: var(--text-secondary); }
+html.dark .dialog-close {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+}
+html.dark .share-link {
+  background: var(--bg-primary);
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+}
+html.dark .share-link button { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+
+/* SOS panel */
+html.dark .senior-sos-panel {
+  background: linear-gradient(100deg, rgba(220,38,38,0.08), rgba(185,28,28,0.05));
+  border-color: rgba(220,38,38,0.25);
+}
+html.dark .senior-sos-panel b { color: #fca5a5; }
+html.dark .senior-sos-panel p { color: #f87171; }
+
+/* Status pills in dark */
+html.dark .status-pending { color: #fbbf24; border-color: rgba(251,191,36,0.25); background: rgba(251,191,36,0.1); }
+html.dark .status-assigned { color: #60a5fa; border-color: rgba(96,165,250,0.25); background: rgba(96,165,250,0.1); }
+html.dark .status-in_progress { color: #4ade80; border-color: rgba(74,222,128,0.25); background: rgba(74,222,128,0.1); }
+html.dark .status-completed { color: #4ade80; border-color: rgba(74,222,128,0.25); background: rgba(74,222,128,0.1); }
+html.dark .status-cancelled { color: #f87171; border-color: rgba(248,113,113,0.25); background: rgba(248,113,113,0.1); }
+
+/* Empty state */
+html.dark .empty-state {
+  background: var(--bg-subtle);
+  border-color: var(--border-color);
+}
+html.dark .empty-state > svg { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
+html.dark .empty-state h3 { color: var(--text-primary); }
+
+/* Loading shimmer */
+html.dark .loading-list i {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-subtle) 38%, var(--bg-card) 63%);
+  background-size: 300% 100%;
+}
+
+/* Verification banner */
+html.dark .verification-banner {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+/* Medicine Reminders Widget */
+.medicine-reminders-card {
+  transition: all 0.3s ease;
+}
+html.dark .medicine-reminders-card {
+  background: var(--bg-card);
+  border-color: var(--border-color);
 }

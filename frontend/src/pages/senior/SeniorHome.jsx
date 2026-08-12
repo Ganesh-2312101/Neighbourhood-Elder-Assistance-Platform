@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertTriangle, ArrowRight, Check, CheckCircle2, Clock3, Copy, Heart, MessageCircle, Phone, Plus, Send, Share2, ShieldCheck, ShoppingCart, Pill, Smartphone, Wrench, Car, Coffee, Star } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Check, CheckCircle2, Clock3, Copy, Heart, MessageCircle, Phone, Plus, Send, Share2, ShieldCheck, ShoppingCart, Pill, Smartphone, Wrench, Car, Coffee, Star, Trash2 } from 'lucide-react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
+import MedicineRemindersWidget from '../../components/MedicineRemindersWidget';
 
 const quickHelp = [
   ['groceries', 'Groceries', ShoppingCart, 'Pick up essentials nearby'],
@@ -71,6 +72,10 @@ export default function SeniorHome() {
   };
 
   const completeTask = async (id) => { try { await api.post(`/tasks/${id}/status`, { status: 'completed', reason: 'Senior confirmed completion' }); fetchTasks(); } catch (err) { alert(err.response?.data?.error || 'Could not update this request.'); } };
+  const deleteTask = async (id) => {
+    if (!window.confirm('Are you sure you want to cancel and remove this request?')) return;
+    try { await api.delete(`/tasks/${id}`); fetchTasks(); } catch (err) { alert('Could not cancel task.'); }
+  };
   const submitRating = async () => {
     try { await api.post(`/tasks/${ratingTask.id}/rate`, { stars, comment, ratee_id: ratingTask.assigned_volunteer_id }); setRatingTask(null); setComment(''); fetchTasks(); }
     catch { alert('Rating could not be submitted.'); }
@@ -92,8 +97,14 @@ export default function SeniorHome() {
       <div className="danger-icon"><AlertTriangle size={23} /></div>
       <div><b>Need urgent help?</b><p>Send an SOS to nearby volunteers or contact your trusted person.</p></div>
       <div className="sos-actions">
-        {contactPhone && <a href={`tel:${contactPhone}`} className="action-button action-outline"><Phone size={16} /> Call contact</a>}
-        {contactPhone && <button onClick={handleWhatsAppSOS} className="action-button action-outline" style={{borderColor: '#25D366', color: '#25D366'}}><MessageCircle size={16} /> WhatsApp SOS</button>}
+        {contactPhone
+          ? <a href={`tel:${contactPhone}`} className="action-button action-outline"><Phone size={16} /> Call contact</a>
+          : <button className="action-button action-outline" onClick={() => alert('No trusted contact saved. Please add one in your profile.')}><Phone size={16} /> Call contact</button>
+        }
+        {contactPhone
+          ? <button onClick={handleWhatsAppSOS} className="action-button action-outline" style={{borderColor: '#25D366', color: '#25D366'}}><MessageCircle size={16} /> WhatsApp SOS</button>
+          : <button className="action-button action-outline" style={{borderColor: '#25D366', color: '#25D366'}} onClick={() => alert('No trusted contact saved. Please add a trusted contact phone number in your profile to use WhatsApp SOS.')}><MessageCircle size={16} /> WhatsApp SOS</button>
+        }
         <button className="action-button action-danger" onClick={handleSOS} disabled={sosLoading}><AlertTriangle size={16} /> {sosLoading ? 'Sending SOS…' : 'Send SOS'}</button>
       </div>
     </section>
@@ -103,6 +114,8 @@ export default function SeniorHome() {
       <div><span>Completed</span><strong>{history.filter(t => t.status === 'completed').length}</strong><small>neighbourhood tasks</small></div>
       <div><span>Trusted contact</span><strong>{user?.trusted_contact_name?.split(' ')[0] || '—'}</strong><small>{user?.trusted_contact_relation || 'Add one in profile'}</small></div>
     </section>
+
+    <MedicineRemindersWidget />
 
     <section className="workspace-card wellness-card">
       <div className="section-title"><div><span className="eyebrow">Daily check-in</span><h2>How are you feeling today?</h2></div>{wellness && <span className="state-message"><Check size={14} /> Thanks for checking in</span>}</div>
@@ -118,7 +131,7 @@ export default function SeniorHome() {
 
     <section className="requests-panel">
       <div className="section-title"><div><span className="eyebrow">Your requests</span><h2>Stay up to date</h2></div><div className="segmented-control"><button className={tab === 'active' ? 'active' : ''} onClick={() => setTab('active')}>Active <span>{active.length}</span></button><button className={tab === 'history' ? 'active' : ''} onClick={() => setTab('history')}>History <span>{history.length}</span></button></div></div>
-      {loading ? <div className="loading-list"><i /><i /><i /></div> : displayed.length === 0 ? <div className="empty-state"><CheckCircle2 size={30} /><h3>{tab === 'active' ? 'No active requests' : 'No request history yet'}</h3><p>{tab === 'active' ? 'When you need a hand, create a request and we’ll help connect you locally.' : 'Completed requests will appear here.'}</p>{tab === 'active' && <Link className="action-button action-primary" to="/senior/create-task">Create a request</Link>}</div> : <div className="request-list">{displayed.map(task => <article className="request-card" key={task.id}><div className="request-card-top"><span className={`status-pill status-${task.status}`}>{statusLabel(task.status)}</span><time><Clock3 size={14} /> {new Date(task.created_at).toLocaleDateString()}</time></div><div className="request-card-content"><div className="task-symbol">{quickHelp.find(q => q[0] === task.category)?.[2] ? React.createElement(quickHelp.find(q => q[0] === task.category)[2], { size: 21 }) : <Heart size={21} />}</div><div><h3>{quickHelp.find(q => q[0] === task.category)?.[1] || task.category}</h3><p>{task.description}</p></div></div>{task.volunteer_name && <div className="helper-line"><ShieldCheck size={16} /><span><b>{task.volunteer_name}</b> is helping with this request</span></div>}<div className="request-actions">{task.status !== 'completed' && <Link to={`/chat/${task.id}`} className="text-button"><MessageCircle size={16} /> Message</Link>}<button className="text-button" onClick={() => setSharing(task)}><Share2 size={16} /> Share</button>{task.status === 'in_progress' && <button className="action-button action-primary small" onClick={() => completeTask(task.id)}>Mark complete</button>}{task.status === 'completed' && task.volunteer_name && <button className="action-button action-outline small" onClick={() => setRatingTask(task)}>Rate helper</button>}</div></article>)}</div>}
+      {loading ? <div className="loading-list"><i /><i /><i /></div> : displayed.length === 0 ? <div className="empty-state"><CheckCircle2 size={30} /><h3>{tab === 'active' ? 'No active requests' : 'No request history yet'}</h3><p>{tab === 'active' ? 'When you need a hand, create a request and we’ll help connect you locally.' : 'Completed requests will appear here.'}</p>{tab === 'active' && <Link className="action-button action-primary" to="/senior/create-task">Create a request</Link>}</div> : <div className="request-list">{displayed.map(task => <article className="request-card" key={task.id}><div className="request-card-top"><span className={`status-pill status-${task.status}`}>{statusLabel(task.status)}</span><time><Clock3 size={14} /> {new Date(task.created_at).toLocaleDateString()}</time></div><div className="request-card-content"><div className="task-symbol">{quickHelp.find(q => q[0] === task.category)?.[2] ? React.createElement(quickHelp.find(q => q[0] === task.category)[2], { size: 21 }) : <Heart size={21} />}</div><div><h3>{quickHelp.find(q => q[0] === task.category)?.[1] || task.category}</h3><p>{task.description}</p></div></div>{task.volunteer_name && <div className="helper-line"><ShieldCheck size={16} /><span><b>{task.volunteer_name}</b> is helping with this request</span></div>}<div className="request-actions">{task.status !== 'completed' && <Link to={`/chat/${task.id}`} className="text-button"><MessageCircle size={16} /> Message</Link>}<button className="text-button" onClick={() => setSharing(task)}><Share2 size={16} /> Share</button>{task.status !== 'completed' && <button className="text-button" style={{ color: '#dc2626' }} onClick={() => deleteTask(task.id)}><Trash2 size={16} /> Cancel request</button>}{task.status === 'in_progress' && <button className="action-button action-primary small" onClick={() => completeTask(task.id)}>Mark complete</button>}{task.status === 'completed' && task.volunteer_name && <button className="action-button action-outline small" onClick={() => setRatingTask(task)}>Rate helper</button>}</div></article>)}</div>}
     </section>
 
     <button className="floating-sos" onClick={handleSOS} disabled={sosLoading}><AlertTriangle size={19} /> {sosLoading ? 'Sending…' : 'SOS'}</button>
