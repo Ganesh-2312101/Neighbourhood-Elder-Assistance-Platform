@@ -32,7 +32,15 @@ async function getPool() {
       queueLimit: 0
     });
 
-    console.log(`Connected to NEAP MySQL database '${DB_NAME}' at ${DB_HOST}:${DB_PORT}`);
+    try {
+      const conn = await pool.getConnection();
+      await conn.ping();
+      conn.release();
+      console.log(`Connected to NEAP MySQL database '${DB_NAME}' at ${DB_HOST}:${DB_PORT}`);
+    } catch (connErr) {
+      console.error('MySQL connection check failed. Verify the database credentials in backend/.env.', connErr.message);
+      throw connErr;
+    }
   }
   return pool;
 }

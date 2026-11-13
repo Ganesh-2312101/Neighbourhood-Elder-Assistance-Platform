@@ -9,16 +9,23 @@ require('./config/db'); // initialize DB tables and seeds
 const app = express();
 const server = http.createServer(app);
 
+const ALLOWED_ORIGINS = process.env.FRONTEND_URL
+  ? [process.env.FRONTEND_URL, 'http://localhost:3000']
+  : ['http://localhost:3000'];
+
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: ALLOWED_ORIGINS,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   },
   maxHttpBufferSize: 1e8 // 100MB limit for audio notes & photo attachments
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ALLOWED_ORIGINS,
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
